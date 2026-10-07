@@ -3,6 +3,11 @@ const screens = new Map(
 );
 
 function showScreen(name) {
+  if (name === "login" || name === "register") {
+    window.location.assign(`https://boxcloudirl.se/${name}`);
+    return;
+  }
+
   for (const [screenName, screen] of screens) {
     screen.hidden = screenName !== name;
   }
@@ -16,8 +21,7 @@ document.querySelectorAll("[data-open-screen]").forEach((button) => {
 document.querySelectorAll("[data-account-form]").forEach((form) => {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
-    const message = form.querySelector(".form-message");
-    message.textContent = "Account service is not connected yet. No information was sent.";
+    window.location.assign(`https://boxcloudirl.se/${form.dataset.accountForm}`);
   });
 });
 
