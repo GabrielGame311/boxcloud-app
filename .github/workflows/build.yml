@@ -15,13 +15,32 @@ jobs:
         with:
           node-version: 22
 
-      - name: Initialize Project & Setup Capacitor
+      - name: Locate WWW & Setup Capacitor
         run: |
+          # Leta upp var mappen www faktiskt ligger i källkoden
+          WWW_PATH=$(find . -maxdepth 3 -type d -name "www" ! -path "./www" | head -n 1)
+
+          if [ -n "$WWW_PATH" ]; then
+            echo "Hittade www-mappen på: $WWW_PATH"
+            cp -r "$WWW_PATH" ./www
+          elif [ ! -d "www" ]; then
+            echo "Hittade ingen www-mapp, skapar en från rotfilerna"
+            mkdir -p www
+            cp index.html www/ 2>/dev/null || true
+            cp -r css img js www/ 2>/dev/null || true
+          fi
+
+          # Kontrollera att index.html finns
+          if [ ! -f "www/index.html" ]; then
+            echo "Skapar reserv index.html"
+            echo '<!DOCTYPE html><html><body><h1>BoxCloud</h1></body></html>' > www/index.html
+          fi
+
           # Installera Capacitor
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/ios
 
-          # Initialisera och synka befintliga filer i www-mappen med iOS
+          # Initialisera och synka med iOS
           npx cap init BoxCloud com.boxcloudirl.dashboard --web-dir www
           npx cap add ios
           npx cap copy
