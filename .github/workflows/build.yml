@@ -17,8 +17,6 @@ jobs:
 
       - name: Initialize Project & Setup Capacitor
         run: |
-          mkdir -p www
-          find . -maxdepth 1 -name "*.html" -exec cp {} www/index.html \;
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/ios
           npx cap init BoxCloud com.boxcloudirl.dashboard --web-dir www
