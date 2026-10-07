@@ -22,6 +22,8 @@ jobs:
           npx cap init BoxCloud com.boxcloudirl.dashboard --web-dir www
           npx cap add ios
           npx cap copy
+          # Skapa en tom config.xml så Xcode inte kraschar när den försöker kopiera filen
+          touch ios/App/App/config.xml
 
       - name: Build Xcode Project
         run: |
