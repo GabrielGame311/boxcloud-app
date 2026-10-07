@@ -23,10 +23,11 @@ jobs:
           npx cap add ios
           npx cap copy
 
-      - name: Build Xcode Project
+      - name: Resolve Swift Packages & Build Xcode
         run: |
           cd ios/App
-          xcodebuild -project App.xcodeproj -scheme App -configuration Release -sdk iphoneos CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" -derivedDataPath build
+          xcodebuild -resolvePackageDependencies -workspace App.xcworkspace -scheme App
+          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -sdk iphoneos CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO -derivedDataPath build
 
       - name: Create IPA Package
         run: |
