@@ -1,0 +1,41 @@
+name: Build Unsigned IPA
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies & Setup iOS
+        run: |
+          npm install
+          npm install @capacitor/core @capacitor/cli @capacitor/ios
+          npx cap init BoxCloud com.boxcloudirl.dashboard --web-dir www
+          npx cap add ios
+          npx cap copy
+
+      - name: Build Xcode Project
+        run: |
+          cd ios/App
+          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -sdk iphoneos CONFIGURATION_BUILD_DIR=build CODE_SIGNING_ALLOWED=NO
+
+      - name: Create IPA Package
+        run: |
+          mkdir -p Payload
+          cp -r ios/App/build/App.app Payload/
+          zip -r BoxCloud.ipa Payload
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: BoxCloud-Unsigned-IPA
+          path: BoxCloud.ipa
