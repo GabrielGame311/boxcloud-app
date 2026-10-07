@@ -15,20 +15,24 @@ jobs:
         with:
           node-version: 22
 
-      - name: Initialize Project & Setup Capacitor
+      - name: Prepare Web Assets & Setup Capacitor
         run: |
+          # Skapa www-mappen
+          mkdir -p www
+          
+          # Kopiera din riktiga app-fil till www/index.html
+          cp boxcloud_irl_ios_dashboard.html www/index.html
+          
+          # Installera Capacitor
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/ios
-          
-          # Skapa dummy-webbfiler så att Capacitor har något att kopiera
-          mkdir -p www
-          echo '<!DOCTYPE html><html><head><title>BoxCloud</title></head><body><h1>BoxCloud</h1></body></html>' > www/index.html
 
+          # Initialisera och synka med iOS
           npx cap init BoxCloud com.boxcloudirl.dashboard --web-dir www
           npx cap add ios
           npx cap copy
           
-          # Skapa saknade filer som Xcode förväntar sig
+          # Skapa strukturen som Xcode förväntar sig
           mkdir -p ios/App/App/public
           cp -r www/* ios/App/App/public/
           touch ios/App/App/config.xml
