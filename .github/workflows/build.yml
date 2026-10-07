@@ -13,11 +13,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
-      - name: Install Dependencies & Setup iOS
+      - name: Initialize Project & Setup Capacitor
         run: |
-          npm install
+          npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/ios
           npx cap init BoxCloud com.boxcloudirl.dashboard --web-dir www
           npx cap add ios
