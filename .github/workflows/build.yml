@@ -20,8 +20,8 @@ jobs:
           # Skapa www-mappen
           mkdir -p www
           
-          # Kopiera din riktiga app-fil till www/index.html
-          cp boxcloud_irl_ios_dashboard.html www/index.html
+          # Kopiera din index.html till www/index.html
+          cp index.html www/index.html
           
           # Installera Capacitor
           npm init -y
