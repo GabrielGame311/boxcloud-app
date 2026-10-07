@@ -15,24 +15,19 @@ jobs:
         with:
           node-version: 22
 
-      - name: Initialize Project & Setup Capacitor
+      - name: Setup Cordova & Build App
         run: |
-          npm init -y
-          npm install @capacitor/core @capacitor/cli @capacitor/ios
-          npx cap init BoxCloud com.boxcloudirl.dashboard --web-dir www
-          npx cap add ios
-          npx cap copy
-
-      - name: Resolve Swift Packages & Build Xcode
-        run: |
-          cd ios/App
-          xcodebuild -resolvePackageDependencies -workspace App.xcworkspace -scheme App
-          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -sdk iphoneos CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO -derivedDataPath build
+          npm install -g cordova
+          cordova create cordova-app com.boxcloudirl.dashboard BoxCloud
+          cp -r www/* cordova-app/www/
+          cd cordova-app
+          cordova platform add ios
+          cordova build ios --release --device -- --codeSignIdentity="" --codeSignRequirement="" --developmentTeam=""
 
       - name: Create IPA Package
         run: |
           mkdir -p Payload
-          cp -r ios/App/build/Build/Products/Release-iphoneos/App.app Payload/
+          cp -r cordova-app/platforms/ios/build/device/BoxCloud.app Payload/
           zip -r BoxCloud.ipa Payload
 
       - name: Upload IPA Artifact
